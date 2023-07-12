@@ -6,27 +6,74 @@
              x:DataType="local:MainPageModel"
              x:Class="AudioScriptSync.MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
-            <Grid RowDefinitions="auto,auto,*"
-                  ColumnDefinitions="200,*">
-                <Label Grid.Row="0" Grid.Column="0"  Text="Audio file:" />
-                <Label Grid.Row="0" Grid.Column="1"  Text="{Binding AudioFile}" />
-                <Label Grid.Row="1" Grid.Column="0"  Text="Script file:" />
-                <Label Grid.Row="1" Grid.Column="1"  Text="{Binding ScriptFile}" />
-                
-                <HorizontalStackLayout Grid.Row="2">
-                    <Button Text="Play" Clicked="Button_Clicked"/>
-                    <Button Text="Open Script" Clicked="OpenScript" />
-                </HorizontalStackLayout>
-            </Grid>
+    <VerticalStackLayout>
 
+        <HorizontalStackLayout>
+            <Button Text="..." Clicked="ChooseAudio"  Margin="0,0,20,0"/>
+            <Label WidthRequest="100" Text="Audio file:" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+            <Label   Text="{Binding AudioFile}" />
+        </HorizontalStackLayout>
 
+        <HorizontalStackLayout>
+            <Button Text="..." Clicked="ChooseScript" Margin="0,0,20,0" />
+            <Label WidthRequest="100" Text="Script file:" />
+
+            <Label   Text="{Binding ScriptFile}" />
+        </HorizontalStackLayout>
+
+        <HorizontalStackLayout >
+            <Button Text="{Binding ButtonText}" Clicked="Button_Clicked" Margin="5" IsEnabled="{Binding PickedFiles}"/>
+        </HorizontalStackLayout>
+        <Label Text="{Binding ElapsedTime,StringFormat='{0:hh\\:mm\\:ss\\.ff}'}" FontSize="35" HorizontalOptions="Center" />
+        <ScrollView>
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Segments}" x:Name="linesPanel">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+
+                </VerticalStackLayout.GestureRecognizers>
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <HorizontalStackLayout x:DataType="local:ScriptSegment">
+                            <HorizontalStackLayout.Style>
+                                <Style TargetType="HorizontalStackLayout" >
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding IsCurrent}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="LightBlue"/>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+
+                                </Style>
+                            </HorizontalStackLayout.Style>
+                            <Label Text="{Binding TimeStamp , StringFormat='{0:hh\\:mm\\:ss\\.ff}'}" WidthRequest="100" Margin="0,0,20,0"/>
+                            <Label Text="{Binding Text}" TextColor="Gray">
+                                <Label.Style>
+                                    <Style TargetType="Label" >
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsCurrent}" Value="True">
+
+                                                <Setter Property="FontSize" Value="25"/>
+                                                <Setter Property="TextColor" Value="Black"/>
+
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+
+                                    </Style>
+
+                                </Label.Style>
+                            </Label>
+
+                        </HorizontalStackLayout>
+
+                    </DataTemplate>
+
+                </BindableLayout.ItemTemplate>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+    </VerticalStackLayout>
 </ContentPage>
 
