@@ -181,7 +181,7 @@ public partial class MainPage : ContentPage
     void TapGestureRecognizer_Tapped(System.Object sender, Microsoft.Maui.Controls.TappedEventArgs e)
     {
         
-        if (!model.Segments.Any())
+        if (player == null || !player.IsPlaying || !model.Segments.Any())
             return;
         model.Segments[currentIndex].IsCurrent = false;
         model.Segments[currentIndex].TimeStamp = (DateTime.Now - startTime);

@@ -6,28 +6,34 @@
              x:DataType="local:MainPageModel"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="AudioScriptSync.MainPage">
+    <Grid
+        RowDefinitions="auto,*">
 
-    <VerticalStackLayout>
+        <VerticalStackLayout>
 
-        <HorizontalStackLayout>
-            <Button Text="..." Clicked="ChooseAudio"  Margin="0,0,20,0"/>
-            <Label WidthRequest="100" Text="Audio file:" />
+            <HorizontalStackLayout>
+                <Button Text="..." Clicked="ChooseAudio"  Margin="0,0,20,0"/>
+                <Label WidthRequest="100" Text="Audio file:" />
 
-            <Label   Text="{Binding AudioFile}" />
-        </HorizontalStackLayout>
+                <Label   Text="{Binding AudioFile}" />
+            </HorizontalStackLayout>
 
-        <HorizontalStackLayout>
-            <Button Text="..." Clicked="ChooseScript" Margin="0,0,20,0" />
-            <Label WidthRequest="100" Text="Script file:" />
+            <HorizontalStackLayout>
+                <Button Text="..." Clicked="ChooseScript" Margin="0,0,20,0" />
+                <Label WidthRequest="100" Text="Script file:" />
 
-            <Label   Text="{Binding ScriptFile}" />
-        </HorizontalStackLayout>
+                <Label   Text="{Binding ScriptFile}" />
+            </HorizontalStackLayout>
 
-        <HorizontalStackLayout >
-            <Button Text="{Binding ButtonText}" Clicked="Button_Clicked" Margin="5" IsEnabled="{Binding PickedFiles}"/>
-        </HorizontalStackLayout>
-        <Label Text="{Binding ElapsedTime,StringFormat='{0:hh\\:mm\\:ss\\.ff}'}" FontSize="35" HorizontalOptions="Center" />
-        <ScrollView>
+            <HorizontalStackLayout >
+                <Button Text="{Binding ButtonText}" Clicked="Button_Clicked" Margin="5" IsEnabled="{Binding PickedFiles}"/>
+            </HorizontalStackLayout>
+            <Label Text="{Binding ElapsedTime,StringFormat='{0:hh\\:mm\\:ss\\.ff}'}" FontSize="35" HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+
+
+        <ScrollView Grid.Row="1">
             <VerticalStackLayout BindableLayout.ItemsSource="{Binding Segments}" x:Name="linesPanel">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
@@ -87,6 +93,7 @@
             </VerticalStackLayout>
 
         </ScrollView>
-    </VerticalStackLayout>
+    </Grid>
+
 </ContentPage>
 
