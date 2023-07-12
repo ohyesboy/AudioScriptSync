@@ -4,6 +4,7 @@
              Shell.NavBarIsVisible="False"
              xmlns:local="clr-namespace:AudioScriptSync"
              x:DataType="local:MainPageModel"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="AudioScriptSync.MainPage">
 
     <VerticalStackLayout>
@@ -47,7 +48,13 @@
                                 </Style>
                             </HorizontalStackLayout.Style>
                             <Label Text="{Binding TimeStamp , StringFormat='{0:hh\\:mm\\:ss\\.ff}'}" WidthRequest="100" Margin="0,0,20,0"/>
-                            <Label Text="{Binding Text}" TextColor="Gray">
+                            <Editor
+                                Text="{Binding Text, Mode=TwoWay}"
+                                   HorizontalOptions="Fill"
+                                HorizontalTextAlignment="Center"
+                                   IsVisible="{Binding Path=EditMode, Source={RelativeSource AncestorType={x:Type local:MainPageModel} }}"/>
+                            <Label Text="{Binding Text}" TextColor="Gray"
+                                   IsVisible="{Binding Path=NotEditMode, Source={RelativeSource AncestorType={x:Type local:MainPageModel} }}">
                                 <Label.Style>
                                     <Style TargetType="Label" >
                                         <Style.Triggers>

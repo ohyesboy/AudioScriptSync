@@ -29,7 +29,7 @@ public partial class MainPage : ContentPage
         model.ScriptFile = Preferences.Get("LastScriptFile", "");
         OpenScript();
         model.AudioFile = Preferences.Get("LastAudioFile", "");
-        model.ButtonText = "Start";
+        model.ButtonText = "End Edit";
         model.IsBusy = true;
         
     }
@@ -54,7 +54,13 @@ public partial class MainPage : ContentPage
 
     void Button_Clicked(System.Object sender, System.EventArgs e)
     {
-        if (model.ButtonText == "Start")
+        if (model.EditMode == true)
+        {
+            model.EditMode = false;
+            model.ButtonText = "Start";
+        }
+          
+        else if (model.ButtonText == "Start")
             Start();
         else if (model.ButtonText == "Stop")
             Stop();
@@ -124,7 +130,7 @@ public partial class MainPage : ContentPage
             var text = seg;
             if(index + seg.Length < content.Length)
                 text += content[index + seg.Length];
-            list.Add(new ScriptSegment { Text = text.Trim().Replace(Environment.NewLine, " ") });
+            list.Add(new ScriptSegment(model) { Text = text.Trim().Replace(Environment.NewLine, " ") });
             index += seg.Length + 1;
         }
         
@@ -168,46 +174,5 @@ public partial class MainPage : ContentPage
         Preferences.Set("LastScriptFile", result.FullPath);
         OpenScript();
     }
-}
-
-public partial class ScriptSegment: ObservableObject
-{
-    [ObservableProperty]
-    string text;
-
-    [ObservableProperty]
-    bool isCurrent;
-
-    [ObservableProperty]
-    TimeSpan timeStamp;
-
-}
-
-
-public partial class MainPageModel : ObservableObject
-{
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(PickedFiles))]
-    string audioFile;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(PickedFiles))]
-    string scriptFile;
-
-    [ObservableProperty]
-    ObservableCollection<ScriptSegment> segments = new ObservableCollection<ScriptSegment>();
-
-    [ObservableProperty]
-    TimeSpan elapsedTime;
-
-    [ObservableProperty]
-    string buttonText;
-
-    [ObservableProperty]
-    bool isBusy;
-
-    public bool PickedFiles
-        => AudioFile != null && ScriptFile != null
-        && File.Exists(AudioFile) && File.Exists(ScriptFile);
 }
 
