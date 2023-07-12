@@ -35,32 +35,37 @@
                 </VerticalStackLayout.GestureRecognizers>
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
-                        <HorizontalStackLayout x:DataType="local:ScriptSegment">
-                            <HorizontalStackLayout.Style>
+                        <Grid
+                            ColumnDefinitions="100,*"
+                            x:DataType="local:ScriptSegment">
+
+                            <Grid.Style>
                                 <Style TargetType="HorizontalStackLayout" >
                                     <Style.Triggers>
-                                        <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding IsCurrent}" Value="True">
+                                        <DataTrigger TargetType="Grid" Binding="{Binding IsCurrent}" Value="True">
                                             <Setter Property="BackgroundColor" Value="LightBlue"/>
                                         </DataTrigger>
 
                                     </Style.Triggers>
 
                                 </Style>
-                            </HorizontalStackLayout.Style>
+                            </Grid.Style>
+
                             <Label Text="{Binding TimeStamp , StringFormat='{0:hh\\:mm\\:ss\\.ff}'}" WidthRequest="100" Margin="0,0,20,0"/>
                             <Editor
+                                Grid.Column="1"
                                 Text="{Binding Text, Mode=TwoWay}"
-                                   HorizontalOptions="Fill"
-                                HorizontalTextAlignment="Center"
-                                   IsVisible="{Binding Path=EditMode, Source={RelativeSource AncestorType={x:Type local:MainPageModel} }}"/>
-                            <Label Text="{Binding Text}" TextColor="Gray"
+                                HorizontalOptions="Fill"
+                                AutoSize="TextChanges"
+                                IsVisible="{Binding Path=EditMode, Source={RelativeSource AncestorType={x:Type local:MainPageModel} }}"/>
+                            <Label
+                                Grid.Column="1"
+                                Text="{Binding Text}" TextColor="Gray"
                                    IsVisible="{Binding Path=NotEditMode, Source={RelativeSource AncestorType={x:Type local:MainPageModel} }}">
                                 <Label.Style>
                                     <Style TargetType="Label" >
                                         <Style.Triggers>
                                             <DataTrigger TargetType="Label" Binding="{Binding IsCurrent}" Value="True">
-
-                                                <Setter Property="FontSize" Value="25"/>
                                                 <Setter Property="TextColor" Value="Black"/>
 
                                             </DataTrigger>
@@ -72,7 +77,8 @@
                                 </Label.Style>
                             </Label>
 
-                        </HorizontalStackLayout>
+                        </Grid>
+
 
                     </DataTemplate>
 

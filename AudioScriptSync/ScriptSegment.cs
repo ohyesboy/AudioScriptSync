@@ -21,12 +21,27 @@ public partial class ScriptSegment : ObservableObject
 
     }
 
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+
+    partial void OnTextChanged(string? oldValue, string newValue)
     {
-        if(e.PropertyName == nameof(Text))
+        if (oldValue == null)
+            return;
+        model.ScriptModified = true;
+        if (string.IsNullOrEmpty(newValue))
         {
-            if (string.IsNullOrEmpty(Text))
-                model.Segments.Remove(this);
+            model.Segments.Remove(this);
+        }
+        var parts = newValue.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length > 1)
+        {
+            this.text = parts[0];
+            this.OnPropertyChanged(nameof(Text));
+            var pos = model.Segments.IndexOf(this);
+            for (int i = 1; i < parts.Length; i++)
+            {
+                model.Segments.Insert(pos + i, new ScriptSegment(model) { Text = parts[i] });
+            }
         }
     }
 }

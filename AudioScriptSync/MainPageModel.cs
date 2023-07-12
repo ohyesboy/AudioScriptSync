@@ -14,6 +14,9 @@ public partial class MainPageModel : ObservableObject
     string scriptFile;
 
     [ObservableProperty]
+    string saveToScriptFile;
+
+    [ObservableProperty]
     ObservableCollection<ScriptSegment> segments = new ObservableCollection<ScriptSegment>();
 
     [ObservableProperty]
@@ -28,8 +31,9 @@ public partial class MainPageModel : ObservableObject
 
     public bool NotEditMode => !EditMode;
 
+
     [ObservableProperty]
-    bool isBusy;
+    bool scriptModified;
 
     public bool PickedFiles
         => AudioFile != null && ScriptFile != null
