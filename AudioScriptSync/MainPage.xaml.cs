@@ -81,7 +81,7 @@ public partial class MainPage : ContentPage
         }
 
         var scriptFile = new FileInfo(model.ScriptFile);
-        var path = Path.Combine(scriptFile.Directory.FullName, scriptFile.Name+"_timeline"+scriptFile.Extension);
+        var path = Path.Combine(scriptFile.Directory.FullName, Path.GetFileNameWithoutExtension(scriptFile.Name) + "_timeline " + scriptFile.Extension);
         File.WriteAllText(path, sb.ToString());
         
     }
