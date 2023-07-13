@@ -13,7 +13,11 @@ public partial class ScriptSegment : ObservableObject
     bool isCurrent;
 
     [ObservableProperty]
-    TimeSpan timeStamp;
+    TimeSpan timeStart;
+
+
+    [ObservableProperty]
+    TimeSpan timeEnd;
 
     public ScriptSegment(MainPageModel model)
     {

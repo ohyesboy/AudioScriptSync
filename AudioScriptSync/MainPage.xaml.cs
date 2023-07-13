@@ -35,7 +35,7 @@ public partial class MainPage : ContentPage
     private void SetTimer()
     {
         // Create a timer with a two second interval.
-        aTimer = new System.Timers.Timer(0.2);
+        aTimer = new System.Timers.Timer(100);
         // Hook up the Elapsed event for the timer. 
         aTimer.Elapsed += OnTimedEvent;
         aTimer.AutoReset = true;
@@ -81,6 +81,10 @@ public partial class MainPage : ContentPage
 
     private void Stop()
     {
+        var last = model.Segments.LastOrDefault();
+        if (last != null && last.TimeEnd.TotalSeconds == 0)
+            last.TimeEnd = TimeSpan.FromSeconds(player.Duration);
+
         if(player.IsPlaying)
             player.Stop();
         aTimer.Stop();
@@ -88,15 +92,22 @@ public partial class MainPage : ContentPage
         OutputFile();
 
         model.ButtonText = "Start";
+
     }
 
     private void OutputFile()
     {
         var sb = new StringBuilder();
-        foreach (var seg in model.Segments)
+        for (int i = 0; i < model.Segments.Count; i++)
         {
-            sb.Append(seg.TimeStamp.ToString("hh':'mm':'ss'.'ff"));
-            sb.AppendLine("\t" + seg.Text);
+
+            var seg = model.Segments[i];
+            sb.AppendLine((i+1).ToString());
+            sb.Append(seg.TimeStart.ToString("hh':'mm':'ss','fff"));
+            sb.Append(" --> ");
+            sb.AppendLine(seg.TimeEnd.ToString("hh':'mm':'ss','fff"));
+            sb.AppendLine(seg.Text);
+            sb.AppendLine();
         }
 
         var path = GetModifiedFilePath(model.ScriptFile, "_timeline");
@@ -130,7 +141,8 @@ public partial class MainPage : ContentPage
         foreach(var seg in model.Segments)
         {
             seg.IsCurrent = false;
-            seg.TimeStamp = new TimeSpan();
+            seg.TimeStart = new TimeSpan();
+            seg.TimeEnd = new TimeSpan();
         }
     }
 
@@ -183,12 +195,14 @@ public partial class MainPage : ContentPage
         
         if (player == null || !player.IsPlaying || !model.Segments.Any())
             return;
+        var now = (DateTime.Now - startTime);
         model.Segments[currentIndex].IsCurrent = false;
-        model.Segments[currentIndex].TimeStamp = (DateTime.Now - startTime);
+        model.Segments[currentIndex].TimeEnd = now;
         currentIndex++;
         if(currentIndex< model.Segments.Count)
         {
             var line = model.Segments[currentIndex];
+            line.TimeStart = now;
             line.IsCurrent = true;
             
         }
