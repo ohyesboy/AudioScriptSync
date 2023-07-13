@@ -36,8 +36,8 @@
         <ScrollView Grid.Row="1">
             <VerticalStackLayout BindableLayout.ItemsSource="{Binding Segments}" x:Name="linesPanel">
                 <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
-
+                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                     <TapGestureRecognizer Tapped="TapGestureRecognizer_SecondaryTapped" Buttons="Secondary"></TapGestureRecognizer>
                 </VerticalStackLayout.GestureRecognizers>
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>

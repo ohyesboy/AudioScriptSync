@@ -14,7 +14,7 @@ public partial class MainPage : ContentPage
     private readonly IAudioManager audios;
     IAudioPlayer player;
     private System.Timers.Timer aTimer;
-    private DateTime startTime;
+
     int currentIndex = 0;
 
 
@@ -40,13 +40,11 @@ public partial class MainPage : ContentPage
         aTimer.Elapsed += OnTimedEvent;
         aTimer.AutoReset = true;
         aTimer.Enabled = true;
-        startTime = DateTime.Now;
     }
 
     private void OnTimedEvent(Object source, ElapsedEventArgs e)
     {
-        var span = startTime - DateTime.Now;
-        model.ElapsedTime = span;
+        model.ElapsedTime = TimeSpan.FromSeconds(player.CurrentPosition);
    
     }
 
@@ -229,6 +227,27 @@ public partial class MainPage : ContentPage
     {
         var file = new FileInfo(originalFilePath);
         return Path.Combine(file.Directory.FullName, Path.GetFileNameWithoutExtension(file.Name) + postfix + file.Extension);
+    }
+
+   
+
+    void TapGestureRecognizer_SecondaryTapped(System.Object sender, Microsoft.Maui.Controls.TappedEventArgs e)
+    {
+        if (player == null)
+            return;
+
+        model.Segments[currentIndex].TimeStart = new TimeSpan();
+        if (currentIndex == 0)
+        {
+            player.Seek(0);
+            return;
+        }
+
+        model.Segments[currentIndex].IsCurrent = false;
+        currentIndex--;
+        model.Segments[currentIndex].IsCurrent = true;
+        model.Segments[currentIndex].TimeEnd = new TimeSpan();
+        player.Seek(model.Segments[currentIndex].TimeStart.TotalSeconds);
     }
 }
 
