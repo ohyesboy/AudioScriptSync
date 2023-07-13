@@ -195,7 +195,7 @@ public partial class MainPage : ContentPage
         
         if (player == null || !player.IsPlaying || !model.Segments.Any())
             return;
-        var now = (DateTime.Now - startTime);
+        var now = TimeSpan.FromSeconds(player.CurrentPosition);
         model.Segments[currentIndex].IsCurrent = false;
         model.Segments[currentIndex].TimeEnd = now;
         currentIndex++;
