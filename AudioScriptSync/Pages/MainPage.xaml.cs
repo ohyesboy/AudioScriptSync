@@ -249,5 +249,20 @@ public partial class MainPage : ContentPage
         model.Segments[currentIndex].TimeEnd = new TimeSpan();
         player.Seek(model.Segments[currentIndex].TimeStart.TotalSeconds);
     }
+
+    async void EditArticle_Clicked(System.Object sender, System.EventArgs e)
+    {
+        var path = GetModifiedFilePath(model.ScriptFile, "_timeline");
+        var fileName = Path.GetFileName(path);
+        if(!File.Exists(path))
+        {
+            await DisplayAlert("Alert", "Timeline file has not been created.\r\n"+ fileName, "OK");
+            return;
+        }
+        await Shell.Current.GoToAsync(nameof(ArticleEditPage),
+          new Dictionary<string, object> {
+                    {"TimelineFile",path }
+          });
+    }
 }
 

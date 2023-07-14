@@ -27,6 +27,7 @@
 
             <HorizontalStackLayout >
                 <Button Text="{Binding ButtonText}" Clicked="Button_Clicked" Margin="5" IsEnabled="{Binding PickedFiles}"/>
+                <Button Text="Edit Article" Clicked="EditArticle_Clicked" Margin="5"/>
             </HorizontalStackLayout>
             <Label Text="{Binding ElapsedTime,StringFormat='{0:hh\\:mm\\:ss\\.ff}'}" FontSize="35" HorizontalOptions="Center" />
 

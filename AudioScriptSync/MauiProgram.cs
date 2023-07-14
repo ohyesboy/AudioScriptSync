@@ -24,6 +24,8 @@ public static class MauiProgram
         builder.Services.AddSingleton(AudioManager.Current);
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<MainPageModel>();
+        builder.Services.AddTransient<ArticleEditPage>();
+        builder.Services.AddTransient<ArticleEditPageModel>();
 
 
         return builder.Build();
