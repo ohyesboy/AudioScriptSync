@@ -261,7 +261,8 @@ public partial class MainPage : ContentPage
         }
         await Shell.Current.GoToAsync(nameof(ArticleEditPage),
           new Dictionary<string, object> {
-                    {"TimelineFile",path }
+              {"TimelineFile",path },
+              {"Segments",model.Segments.ToList() }
           });
     }
 }

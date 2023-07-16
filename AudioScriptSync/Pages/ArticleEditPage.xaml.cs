@@ -13,9 +13,3 @@ public partial class ArticleEditPage : ContentPage
         this.model = model;
     }
 }
-[QueryProperty(nameof(TimelineFile), nameof(TimelineFile))]
-public partial class ArticleEditPageModel: ObservableObject
-{
-    [ObservableProperty]
-    string timelineFile;
-}

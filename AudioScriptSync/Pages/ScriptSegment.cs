@@ -25,7 +25,6 @@ public partial class ScriptSegment : ObservableObject
 
     }
 
-
     partial void OnTextChanged(string? oldValue, string newValue)
     {
         if (oldValue == null)

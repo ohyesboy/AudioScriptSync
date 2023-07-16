@@ -3,12 +3,64 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:AudioScriptSync"
              x:Class="AudioScriptSync.ArticleEditPage"
-             x:DataType="local:ArticleEditPageModel"
-             Title="{Binding TimelineFile}">
-    <VerticalStackLayout>
-        <Label 
-            Text="{Binding TimelineFile}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="local:ArticleEditPageModel">
+    <ScrollView>
+
+        <VerticalStackLayout BindableLayout.ItemsSource="{Binding Paragraphs}">
+            <BindableLayout.ItemTemplate >
+                <DataTemplate x:DataType="local:Paragraph">
+                    <VerticalStackLayout>
+                         <Label Text="{Binding SegmentNumbers}"/>
+                          <VerticalStackLayout
+                        Margin="20"
+                        BindableLayout.ItemsSource="{Binding Segments}">
+
+                         <Label Text="{Binding SegmentNumbers}"/>
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="local:ParagraphSegment">
+                                <Label Text="{Binding Text}" />
+
+                            </DataTemplate>
+
+                        </BindableLayout.ItemTemplate>
+                       
+                    </VerticalStackLayout>
+                    </VerticalStackLayout>
+                  
+
+                </DataTemplate>
+
+            </BindableLayout.ItemTemplate>
+
+        </VerticalStackLayout>
+        <!--<CollectionView ItemsSource="{Binding Paragraphs}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="local:Paragraph">
+                <VerticalStackLayout>
+                    <Label Text="{Binding SegmentNumbers}"/>
+
+                    <CollectionView ItemsSource="{Binding Segments}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="local:ParagraphSegment">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Text}"/>
+
+
+                                </VerticalStackLayout>
+
+                            </DataTemplate>
+
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+
+                </VerticalStackLayout>
+
+            </DataTemplate>
+
+        </CollectionView.ItemTemplate>
+
+    </CollectionView>-->
+
+    </ScrollView>
 </ContentPage>
