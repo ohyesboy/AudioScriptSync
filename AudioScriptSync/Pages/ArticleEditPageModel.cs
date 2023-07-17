@@ -44,6 +44,17 @@ public partial class ArticleEditPageModel: ObservableObject
 
 public partial class Paragraph: ObservableObject
 {
+    public Paragraph()
+    {
+        Segments.CollectionChanged += Segments_CollectionChanged;
+
+    }
+
+    private void Segments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(SegmentNumbers));
+    }
+
     [ObservableProperty]
     string translation;
 
@@ -52,7 +63,10 @@ public partial class Paragraph: ObservableObject
     [NotifyPropertyChangedFor(nameof(SegmentNumbers))]
     ObservableCollection<ParagraphSegment> segments = new ObservableCollection<ParagraphSegment>();
 
-    
+    [ObservableProperty]
+    bool isDragHover;
+
+
     public string SegmentNumbers
     {
         get

@@ -10,23 +10,44 @@
             <BindableLayout.ItemTemplate >
                 <DataTemplate x:DataType="local:Paragraph">
                     <VerticalStackLayout>
-                         <Label Text="{Binding SegmentNumbers}"/>
-                          <VerticalStackLayout
+                        <View.GestureRecognizers>
+                            <DropGestureRecognizer Drop="DropParagraph" DragOver="DragOverParagraph" DragLeave="DragLeaveParagraph"/>
+
+                        </View.GestureRecognizers>
+                        <View.Style>
+                            <Style TargetType="View">
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="View" Binding="{Binding IsDragHover}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="LightBlue"></Setter>
+
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+
+                            </Style>
+
+                        </View.Style>
+
+                        <Label Text="{Binding SegmentNumbers}" />
+                        <VerticalStackLayout
                         Margin="20"
                         BindableLayout.ItemsSource="{Binding Segments}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="local:ParagraphSegment">
+                                    <Label Text="{Binding Text}" >
+                                        <View.GestureRecognizers>
+                                            <DragGestureRecognizer DragStarting="DragParagraph"/>
 
-                         <Label Text="{Binding SegmentNumbers}"/>
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="local:ParagraphSegment">
-                                <Label Text="{Binding Text}" />
+                                        </View.GestureRecognizers>
+                                    </Label>
 
-                            </DataTemplate>
+                                </DataTemplate>
 
-                        </BindableLayout.ItemTemplate>
-                       
+                            </BindableLayout.ItemTemplate>
+
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
-                    </VerticalStackLayout>
-                  
+
 
                 </DataTemplate>
 
