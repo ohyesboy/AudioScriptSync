@@ -87,31 +87,11 @@ public partial class MainPage : ContentPage
             player.Stop();
         aTimer.Stop();
         
-        OutputFile();
-
         model.ButtonText = "Start";
 
     }
 
-    private void OutputFile()
-    {
-        var sb = new StringBuilder();
-        for (int i = 0; i < model.Segments.Count; i++)
-        {
-
-            var seg = model.Segments[i];
-            sb.AppendLine((i+1).ToString());
-            sb.Append(seg.TimeStart.ToString("hh':'mm':'ss','fff"));
-            sb.Append(" --> ");
-            sb.AppendLine(seg.TimeEnd.ToString("hh':'mm':'ss','fff"));
-            sb.AppendLine(seg.Text);
-            sb.AppendLine();
-        }
-
-        var path = GetModifiedFilePath(model.ScriptFile, "_timeline");
-        File.WriteAllText(path, sb.ToString());
-        
-    }
+ 
 
     private void Start()
     {
@@ -252,13 +232,12 @@ public partial class MainPage : ContentPage
 
     async void EditArticle_Clicked(System.Object sender, System.EventArgs e)
     {
+        await GoToArticleEdit();
+    }
+
+    async Task GoToArticleEdit()
+    {
         var path = GetModifiedFilePath(model.ScriptFile, "_timeline");
-        var fileName = Path.GetFileName(path);
-        if(!File.Exists(path))
-        {
-            await DisplayAlert("Alert", "Timeline file has not been created.\r\n"+ fileName, "OK");
-            return;
-        }
         await Shell.Current.GoToAsync(nameof(ArticleEditPage),
           new Dictionary<string, object> {
               {"TimelineFile",path },

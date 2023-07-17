@@ -4,84 +4,68 @@
              xmlns:local="clr-namespace:AudioScriptSync"
              x:Class="AudioScriptSync.ArticleEditPage"
              x:DataType="local:ArticleEditPageModel">
-    <ScrollView>
+    <Grid RowDefinitions="auto,*">
+        <HorizontalStackLayout>
+            <Button Text="Translate" Clicked="TranslateClicked" />
+            <Button Text="Save" Clicked="SaveClicked" />
 
-        <VerticalStackLayout BindableLayout.ItemsSource="{Binding Paragraphs}">
-            <BindableLayout.ItemTemplate >
-                <DataTemplate x:DataType="local:Paragraph">
-                    <VerticalStackLayout>
-                        <View.GestureRecognizers>
-                            <DropGestureRecognizer Drop="DropParagraph" DragOver="DragOverParagraph" DragLeave="DragLeaveParagraph"/>
+        </HorizontalStackLayout>
+        <ScrollView Grid.Row="1">
 
-                        </View.GestureRecognizers>
-                        <View.Style>
-                            <Style TargetType="View">
-                                <Style.Triggers>
-                                    <DataTrigger TargetType="View" Binding="{Binding IsDragHover}" Value="True">
-                                        <Setter Property="BackgroundColor" Value="LightBlue"></Setter>
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Paragraphs}">
+                <BindableLayout.ItemTemplate >
+                    <DataTemplate x:DataType="local:Paragraph">
+                        <VerticalStackLayout>
+                            <View.GestureRecognizers>
+                                <DropGestureRecognizer Drop="DropParagraph" DragOver="DragOverParagraph" DragLeave="DragLeaveParagraph"/>
 
-                                    </DataTrigger>
+                            </View.GestureRecognizers>
+                            <View.Style>
+                                <Style TargetType="View">
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="View" Binding="{Binding IsDragHover}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="LightBlue"></Setter>
 
-                                </Style.Triggers>
+                                        </DataTrigger>
 
-                            </Style>
+                                    </Style.Triggers>
 
-                        </View.Style>
+                                </Style>
 
-                        <Label Text="{Binding SegmentNumbers}" />
-                        <VerticalStackLayout
+                            </View.Style>
+
+                            <Label Text="{Binding SegmentNumbers}" />
+                            <VerticalStackLayout
                         Margin="20"
                         BindableLayout.ItemsSource="{Binding Segments}">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="local:ParagraphSegment">
-                                    <Label Text="{Binding Text}" >
-                                        <View.GestureRecognizers>
-                                            <DragGestureRecognizer DragStarting="DragParagraph"/>
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="local:ParagraphSegment">
+                                        <Label Text="{Binding Text}" >
+                                            <View.GestureRecognizers>
+                                                <DragGestureRecognizer DragStarting="DragParagraph"/>
 
-                                        </View.GestureRecognizers>
-                                    </Label>
+                                            </View.GestureRecognizers>
+                                        </Label>
 
-                                </DataTemplate>
+                                    </DataTemplate>
 
-                            </BindableLayout.ItemTemplate>
+                                </BindableLayout.ItemTemplate>
+
+                            </VerticalStackLayout>
+                            <Frame Margin="20,0">
+                                <Editor Text="{Binding Translation}" AutoSize="TextChanges"/>
+                            </Frame>
 
                         </VerticalStackLayout>
-                    </VerticalStackLayout>
+                    </DataTemplate>
+
+                </BindableLayout.ItemTemplate>
+
+            </VerticalStackLayout>
 
 
-                </DataTemplate>
+        </ScrollView>
 
-            </BindableLayout.ItemTemplate>
+    </Grid>
 
-        </VerticalStackLayout>
-        <!--<CollectionView ItemsSource="{Binding Paragraphs}">
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="local:Paragraph">
-                <VerticalStackLayout>
-                    <Label Text="{Binding SegmentNumbers}"/>
-
-                    <CollectionView ItemsSource="{Binding Segments}">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="local:ParagraphSegment">
-                                <VerticalStackLayout>
-                                    <Label Text="{Binding Text}"/>
-
-
-                                </VerticalStackLayout>
-
-                            </DataTemplate>
-
-                        </CollectionView.ItemTemplate>
-
-                    </CollectionView>
-
-                </VerticalStackLayout>
-
-            </DataTemplate>
-
-        </CollectionView.ItemTemplate>
-
-    </CollectionView>-->
-
-    </ScrollView>
 </ContentPage>

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Text.Json;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AudioScriptSync;
 
@@ -12,6 +13,23 @@ public partial class ArticleEditPage : ContentPage
 		this.BindingContext = model;
         this.model = model;
     }
+
+    void TranslateClicked(object sender, EventArgs e)
+    {
+        foreach(var p in model.Paragraphs)
+        {
+            p.Translation = string.Join("", p.Segments.Select(x=>x.Text));
+        }
+    }
+    async void SaveClicked(object sender, EventArgs e)
+    {
+        var paras = model.Paragraphs.Select(x => new ParagraphOutput { Translation = x.Translation,Segments = x.Segments.Select(x=>x.Text).ToList() }).ToList();
+        var json = JsonSerializer.Serialize(paras);
+        File.WriteAllText(model.TimelineFile, json);
+        await DisplayAlert("Alert", "File saved\r\n" + model.TimelineFile, "OK");
+
+    }
+
     void DropParagraph(System.Object sender, DropEventArgs e)
     {
         var control = (sender as Element)?.Parent;

@@ -59,7 +59,6 @@ public partial class Paragraph: ObservableObject
     string translation;
 
     [ObservableProperty]
-    [NonSerialized]
     [NotifyPropertyChangedFor(nameof(SegmentNumbers))]
     ObservableCollection<ParagraphSegment> segments = new ObservableCollection<ParagraphSegment>();
 
@@ -76,6 +75,12 @@ public partial class Paragraph: ObservableObject
             return string.Join(",", Segments.Select(x => x.Order));
         }
     }
+}
+
+public class ParagraphOutput
+{
+    public string Translation { get; set; }
+    public List<string> Segments { get; set; }
 }
 
 public partial class ParagraphSegment: ObservableObject
