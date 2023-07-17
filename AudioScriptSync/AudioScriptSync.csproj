@@ -57,12 +57,17 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 		<PackageReference Include="Plugin.Maui.Audio" Version="1.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <None Remove="Pages\" />
+	  <None Remove="appsettings.json" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Pages\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="appsettings.json" />
 	</ItemGroup>
 </Project>

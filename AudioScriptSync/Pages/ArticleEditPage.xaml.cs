@@ -1,30 +1,74 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Configuration;
 
 namespace AudioScriptSync;
 
 public partial class ArticleEditPage : ContentPage
 {
     private readonly ArticleEditPageModel model;
+    private readonly IConfiguration config;
 
-    public ArticleEditPage(ArticleEditPageModel model)
+    public ArticleEditPage(ArticleEditPageModel model, IConfiguration config)
 	{
 		InitializeComponent();
 		this.BindingContext = model;
         this.model = model;
+        this.config = config;
     }
 
-    void TranslateClicked(object sender, EventArgs e)
+    async void TranslateClicked(object sender, EventArgs e)
     {
-        foreach(var p in model.Paragraphs)
+        var apiKey = config["apikey"];
+        if(apiKey == null)
         {
-            p.Translation = string.Join("", p.Segments.Select(x=>x.Text));
+            await DisplayAlert("Error", "Missing [apikey] from config", "Ok");
+            return;
         }
+        var openai = new OpenAiClient(apiKey);
+
+        //remove empty ones
+        for (int i = 0; i < model.Paragraphs.Count; i++)
+        {
+            if (model.Paragraphs[i].Segments.Count == 0)
+            {
+                model.Paragraphs.RemoveAt(i);
+                i--;
+            }
+        }
+        var start = DateTime.Now;
+        model.IsBusy = true;
+        var separator = "\r\n----------\r\n";
+        var combinedString = string.Join(separator, model.Paragraphs.Select(p => string.Join("", p.Segments.Select(x => x.Text))));
+        
+        var response = await openai.Talk($"Translate this text to Chinese(keep the line break and separator '----------'): {combinedString}");
+
+        model.IsBusy = false;
+        var responseParts = response.Split("----------", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+        //if(responseParts.Length!= model.Paragraphs.Count)
+        //{
+        //    await DisplayAlert("Error",
+        //        $"Translation parts count({responseParts.Length}) does not match original paragraph count({model.Paragraphs.Count})", "Ok");
+        //    return;
+        //}
+
+        var length = Math.Min(responseParts.Length, model.Paragraphs.Count);
+        for (int i = 0; i < length ; i++)
+        {
+            model.Paragraphs[i].Translation = responseParts[i];
+        }
+        var timespan = DateTime.Now - start;
+        await DisplayAlert("Succeed", $"Took {timespan.TotalSeconds.ToString("0.0")} seconds", "Ok");
     }
+
+   
     async void SaveClicked(object sender, EventArgs e)
     {
         var paras = model.Paragraphs.Select(x => new ParagraphOutput { Translation = x.Translation,Segments = x.Segments.Select(x=>x.Text).ToList() }).ToList();
-        var json = JsonSerializer.Serialize(paras);
+        JsonSerializerOptions jso = new JsonSerializerOptions();
+        jso.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+        var json = JsonSerializer.Serialize(paras,jso);
         File.WriteAllText(model.TimelineFile, json);
         await DisplayAlert("Alert", "File saved\r\n" + model.TimelineFile, "OK");
 
@@ -101,23 +145,5 @@ public partial class ArticleEditPage : ContentPage
         var seg = control.BindingContext as ParagraphSegment;
         e.Data.Properties["Paragraph"] = sourceParagraph;
         e.Data.Properties["Segment"] = seg;
-
-
-    }
-
-
-}
-
-public class BindingHelper
-{
-    public static T GetAncestorBindingContext<T>(Element ele)
-    {
-        while (ele!=null)
-        {
-            if (ele.BindingContext is T ctx)
-                return ctx;
-            ele = ele.Parent;
-        }
-        return default(T);
     }
 }

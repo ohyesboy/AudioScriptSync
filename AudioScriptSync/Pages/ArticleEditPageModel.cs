@@ -8,6 +8,12 @@ namespace AudioScriptSync;
 public partial class ArticleEditPageModel: ObservableObject
 {
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotBusy))]
+    bool isBusy;
+
+    public bool IsNotBusy { get => !IsBusy; }
+
+    [ObservableProperty]
     string timelineFile;
 
     [ObservableProperty]

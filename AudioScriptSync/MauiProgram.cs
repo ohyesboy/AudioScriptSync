@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.Extensions.Configuration;
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Plugin.Maui.Audio;
 
@@ -20,6 +22,16 @@ public static class MauiProgram
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
+
+        //
+        var a = Assembly.GetExecutingAssembly();
+        using var stream = a.GetManifestResourceStream("AudioScriptSync.appsettings.json");
+
+        var config = new ConfigurationBuilder()
+                    .AddJsonStream(stream)
+                    .Build();
+        builder.Configuration.AddConfiguration(config);
+
 
         builder.Services.AddSingleton(AudioManager.Current);
         builder.Services.AddSingleton<MainPage>();

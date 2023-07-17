@@ -5,9 +5,10 @@
              x:Class="AudioScriptSync.ArticleEditPage"
              x:DataType="local:ArticleEditPageModel">
     <Grid RowDefinitions="auto,*">
+        
         <HorizontalStackLayout>
-            <Button Text="Translate" Clicked="TranslateClicked" />
-            <Button Text="Save" Clicked="SaveClicked" />
+            <Button Text="Translate" Clicked="TranslateClicked" IsEnabled="{Binding IsNotBusy}" />
+            <Button Text="Save" Clicked="SaveClicked" IsEnabled="{Binding IsNotBusy}"/>
 
         </HorizontalStackLayout>
         <ScrollView Grid.Row="1">
@@ -65,7 +66,7 @@
 
 
         </ScrollView>
-
+        <ActivityIndicator IsRunning="{Binding IsBusy}" Color="Orange" Scale="2" Grid.RowSpan="2" />
     </Grid>
 
 </ContentPage>
