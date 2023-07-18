@@ -5,7 +5,7 @@ namespace AudioScriptSync;
 
 public partial class ScriptSegment : ObservableObject
 {
-    private readonly MainPageModel model;
+    internal MainPageModel model;
     [ObservableProperty]
     string text;
 
@@ -18,6 +18,11 @@ public partial class ScriptSegment : ObservableObject
 
     [ObservableProperty]
     TimeSpan timeEnd;
+
+    public ScriptSegment()
+    {
+
+    }
 
     public ScriptSegment(MainPageModel model)
     {

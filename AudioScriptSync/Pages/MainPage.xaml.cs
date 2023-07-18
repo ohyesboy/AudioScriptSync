@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Timers;
 using System.Text;
-
+using System.Text.Json;
 
 namespace AudioScriptSync;
 
@@ -24,14 +24,19 @@ public partial class MainPage : ContentPage
         this.model = model;
         this.audios = audios;
         this.BindingContext = model;
-
-        //"/Users/zc/test/beedata/pumaatlarge.txt"
-        model.ScriptFile = Preferences.Get("LastScriptFile", "");
-        OpenScript();
+        model.TimelineFile = Preferences.Get("LastTimelineFile", "");
         model.AudioFile = Preferences.Get("LastAudioFile", "");
+        LoadTimelineFile();
+        model.ButtonText = "Start";
 
     }
- 
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        SaveTimelineFile();
+    }
+
     private void SetTimer()
     {
         // Create a timer with a two second interval.
@@ -50,32 +55,14 @@ public partial class MainPage : ContentPage
 
     void Button_Clicked(System.Object sender, System.EventArgs e)
     {
-        if (model.EditMode == true)
-            EndEdit();
-        else if (model.ButtonText == "Start")
+        if (model.ButtonText == "Start")
             Start();
         else if (model.ButtonText == "Stop")
             Stop();
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    private void EndEdit()
-    {
-        model.EditMode = false;
-        model.ButtonText = "Start";
+   
 
-        if(model.ScriptModified)
-        {
-            var sb = new StringBuilder();
-            foreach (var seg in model.Segments)
-            {
-                sb.AppendLine(seg.Text);
-            }
-            File.WriteAllText(model.SaveToScriptFile, sb.ToString());
-        }
-    }
 
     private void Stop()
     {
@@ -88,7 +75,7 @@ public partial class MainPage : ContentPage
         aTimer.Stop();
         
         model.ButtonText = "Start";
-
+        model.EditMode = true;
     }
 
  
@@ -96,6 +83,7 @@ public partial class MainPage : ContentPage
     private void Start()
     {
         currentIndex = 0;
+        model.EditMode = false;
         model.ButtonText = "Stop";
         if (player == null)
         {
@@ -129,23 +117,44 @@ public partial class MainPage : ContentPage
         Stop();
     }
 
-    //If originalName_edited.txt exists, SaveToScriptFile will point to it.
-    void OpenScript()
+    void SaveTimelineFile()
     {
-        if (!File.Exists(model.ScriptFile))
+        var segments = model.Segments.ToList();
+        JsonSerializerOptions jso = new JsonSerializerOptions();
+        jso.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+        var json = JsonSerializer.Serialize(segments, jso);
+        File.WriteAllText(model.TimelineFile, json);
+
+    }
+
+    void LoadTimelineFile()
+    {
+     
+        if (!File.Exists(model.TimelineFile))
+            return;
+        var json = File.ReadAllText(model.TimelineFile);
+        var segments = JsonSerializer.Deserialize<List<ScriptSegment>>(json);
+        foreach(var seg in segments)
+        {
+            seg.IsCurrent = false;
+            seg.model = this.model;
+        }
+        model.Segments = new ObservableCollection<ScriptSegment>(segments);
+        model.PickedFiles = true;
+    }
+
+
+    void LoadRawTextFile(string textFile)
+    {
+        if (!File.Exists(textFile))
             return;
 
-        model.ButtonText = "End Edit";
+        
+        model.PickedFiles = true;
+        
         model.EditMode = true;
-        
-        var firstLoadFrom = model.ScriptFile;
-        var modifiedFile = GetModifiedFilePath(model.ScriptFile, "_edited");
-        model.SaveToScriptFile = modifiedFile;
-        if (File.Exists(modifiedFile))
-            firstLoadFrom = modifiedFile;
 
-        
-        var content = File.ReadAllText(firstLoadFrom);
+        var content = File.ReadAllText(textFile);
         content = content.Replace("\r\n", "\n").Replace("\r", "\n");
 
         var segsRaw = content.Split(new[] { ',','.','!','?','\n' }, StringSplitOptions.None);
@@ -198,15 +207,15 @@ public partial class MainPage : ContentPage
     async void ChooseScript(System.Object sender, System.EventArgs e)
     {
         var result = await FilePicker.PickAsync(new PickOptions { });
-        model.ScriptFile = result.FullPath;
-        Preferences.Set("LastScriptFile", result.FullPath);
-        OpenScript();
+        model.TimelineFile = GetModifiedFilePath( result.FullPath, "",".json");
+        Preferences.Set("LastTimelineFile", model.TimelineFile);
+        LoadRawTextFile(result.FullPath);
     }
 
-    private string GetModifiedFilePath(string originalFilePath, string postfix)
+    private string GetModifiedFilePath(string originalFilePath, string postfix, string extension = null)
     {
         var file = new FileInfo(originalFilePath);
-        return Path.Combine(file.Directory.FullName, Path.GetFileNameWithoutExtension(file.Name) + postfix + file.Extension);
+        return Path.Combine(file.Directory.FullName, Path.GetFileNameWithoutExtension(file.Name) + postfix + (extension?? file.Extension));
     }
 
    
@@ -237,7 +246,8 @@ public partial class MainPage : ContentPage
 
     async Task GoToArticleEdit()
     {
-        var path = GetModifiedFilePath(model.ScriptFile, "_timeline");
+        SaveTimelineFile();
+        var path = GetModifiedFilePath(model.TimelineFile, "_all");
         await Shell.Current.GoToAsync(nameof(ArticleEditPage),
           new Dictionary<string, object> {
               {"TimelineFile",path },

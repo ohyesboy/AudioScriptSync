@@ -6,12 +6,10 @@ namespace AudioScriptSync;
 public partial class MainPageModel : ObservableObject
 {
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(PickedFiles))]
     string audioFile;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(PickedFiles))]
-    string scriptFile;
+    string timelineFile;
 
     [ObservableProperty]
     string saveToScriptFile;
@@ -35,8 +33,8 @@ public partial class MainPageModel : ObservableObject
     [ObservableProperty]
     bool scriptModified;
 
-    public bool PickedFiles
-        => AudioFile != null && ScriptFile != null
-        && File.Exists(AudioFile) && File.Exists(ScriptFile);
+    [ObservableProperty]
+    public bool pickedFiles;
+       
 }
 

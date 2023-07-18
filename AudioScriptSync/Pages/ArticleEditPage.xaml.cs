@@ -38,13 +38,13 @@ public partial class ArticleEditPage : ContentPage
         }
 
         model.IsBusy = true;
-        var separator = "\r\n----------\r\n";
+        var separator = "\r\n-----\r\n";
         var combinedString = string.Join(separator, model.Paragraphs.Select(p => string.Join("", p.Segments.Select(x => x.Text))));
 
         var response = client.TranslateText(combinedString, LanguageCodes.ChineseSimplified, LanguageCodes.English);
 
         model.IsBusy = false;
-        var responseParts = response.TranslatedText.Split("----------", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+        var responseParts = response.TranslatedText.Split("-----", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
       
 
         var length = Math.Min(responseParts.Length, model.Paragraphs.Count);

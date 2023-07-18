@@ -22,7 +22,7 @@
                 <Button Text="..." Clicked="ChooseScript" Margin="0,0,20,0" />
                 <Label WidthRequest="100" Text="Script file:" />
 
-                <Label   Text="{Binding ScriptFile}" />
+                <Label Text="{Binding TimelineFile}" />
             </HorizontalStackLayout>
 
             <HorizontalStackLayout >
