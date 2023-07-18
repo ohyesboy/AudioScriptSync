@@ -3,21 +3,29 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AudioScriptSync;
 
-public partial class ScriptSegment : ObservableObject
+public class ScriptSegment : ModelBase
 {
     internal MainPageModel model;
-    [ObservableProperty]
-    string text;
 
-    [ObservableProperty]
-    bool isCurrent;
-
-    [ObservableProperty]
-    TimeSpan timeStart;
+    string _Text;
+    public string Text { get => _Text; set { if (_Text == value) return; var oldValue = _Text; _Text = value; OnTextChanged(oldValue, value); OnPropertyChanged(); } }
 
 
-    [ObservableProperty]
-    TimeSpan timeEnd;
+
+    bool _IsCurrent;
+    public bool IsCurrent { get => _IsCurrent; set { if (_IsCurrent == value) return; _IsCurrent = value; OnPropertyChanged(); } }
+
+
+
+    TimeSpan _TimeStart;
+    public TimeSpan TimeStart { get => _TimeStart; set { if (_TimeStart == value) return; _TimeStart = value; OnPropertyChanged(); } }
+
+
+
+
+    TimeSpan _TimeEnd;
+    public TimeSpan TimeEnd { get => _TimeEnd; set { if (_TimeEnd == value) return; _TimeEnd = value; OnPropertyChanged(); } }
+
 
     public ScriptSegment()
     {
@@ -30,7 +38,7 @@ public partial class ScriptSegment : ObservableObject
 
     }
 
-    partial void OnTextChanged(string? oldValue, string newValue)
+    void OnTextChanged(string? oldValue, string newValue)
     {
         if (oldValue == null)
             return;
@@ -43,7 +51,7 @@ public partial class ScriptSegment : ObservableObject
 
         if (parts.Length > 1)
         {
-            this.text = parts[0];
+            this._Text = parts[0];
             this.OnPropertyChanged(nameof(Text));
             var pos = model.Segments.IndexOf(this);
             for (int i = 1; i < parts.Length; i++)

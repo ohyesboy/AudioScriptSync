@@ -28,7 +28,7 @@ public partial class MainPage : ContentPage
         model.AudioFile = Preferences.Get("LastAudioFile", "");
         LoadTimelineFile();
         model.ButtonText = "Start";
-
+        model.EditMode = true;
     }
 
     protected override void OnDisappearing()
