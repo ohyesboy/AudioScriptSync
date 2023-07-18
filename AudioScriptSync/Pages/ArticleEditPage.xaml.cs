@@ -1,7 +1,9 @@
 ﻿using System.Text;
 using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Google.Cloud.Translation.V2;
 using Microsoft.Extensions.Configuration;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AudioScriptSync;
 
@@ -20,14 +22,11 @@ public partial class ArticleEditPage : ContentPage
 
     async void TranslateClicked(object sender, EventArgs e)
     {
-        var apiKey = config["apikey"];
-        if(apiKey == null)
-        {
-            await DisplayAlert("Error", "Missing [apikey] from config", "Ok");
-            return;
-        }
-        var openai = new OpenAiClient(apiKey);
+        //set this to point to the Google auth json file on local
+        //Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
+        var client = TranslationClient.Create();
 
+     
         //remove empty ones
         for (int i = 0; i < model.Paragraphs.Count; i++)
         {
@@ -37,40 +36,33 @@ public partial class ArticleEditPage : ContentPage
                 i--;
             }
         }
-        var start = DateTime.Now;
+
         model.IsBusy = true;
         var separator = "\r\n----------\r\n";
         var combinedString = string.Join(separator, model.Paragraphs.Select(p => string.Join("", p.Segments.Select(x => x.Text))));
-        
-        var response = await openai.Talk($"Translate this text to Chinese(keep the line break and separator '----------'): {combinedString}");
+
+        var response = client.TranslateText(combinedString, LanguageCodes.ChineseSimplified, LanguageCodes.English);
 
         model.IsBusy = false;
-        var responseParts = response.Split("----------", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
-        //if(responseParts.Length!= model.Paragraphs.Count)
-        //{
-        //    await DisplayAlert("Error",
-        //        $"Translation parts count({responseParts.Length}) does not match original paragraph count({model.Paragraphs.Count})", "Ok");
-        //    return;
-        //}
+        var responseParts = response.TranslatedText.Split("----------", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+      
 
         var length = Math.Min(responseParts.Length, model.Paragraphs.Count);
-        for (int i = 0; i < length ; i++)
+        for (int i = 0; i < length; i++)
         {
             model.Paragraphs[i].Translation = responseParts[i];
         }
-        var timespan = DateTime.Now - start;
-        await DisplayAlert("Succeed", $"Took {timespan.TotalSeconds.ToString("0.0")} seconds", "Ok");
+
     }
 
    
     async void SaveClicked(object sender, EventArgs e)
     {
-        var paras = model.Paragraphs.Select(x => new ParagraphOutput { Translation = x.Translation,Segments = x.Segments.Select(x=>x.Text).ToList() }).ToList();
+        var paras = model.Paragraphs.Select(x => new ParagraphOutput { Translation = x.Translation,Segments = x.Segments.ToList() }).ToList();
         JsonSerializerOptions jso = new JsonSerializerOptions();
         jso.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
         var json = JsonSerializer.Serialize(paras,jso);
         File.WriteAllText(model.TimelineFile, json);
-        await DisplayAlert("Alert", "File saved\r\n" + model.TimelineFile, "OK");
 
     }
 

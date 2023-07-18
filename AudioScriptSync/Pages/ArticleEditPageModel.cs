@@ -31,7 +31,7 @@ public partial class ArticleEditPageModel: ObservableObject
         {
             order++;
 
-            var seg2 = new ParagraphSegment() { Text = seg.Text, Order = order };
+            var seg2 = new ParagraphSegment() { Text = seg.Text, Order = order, TimeEnd = seg.TimeEnd, TimeStart = seg.TimeStart };
             paragraph.Segments.Add(seg2);
            if(seg.Text.EndsWith(".") || seg.Text.EndsWith("?")|| seg.Text.EndsWith("!"))
             {
@@ -86,7 +86,7 @@ public partial class Paragraph: ObservableObject
 public class ParagraphOutput
 {
     public string Translation { get; set; }
-    public List<string> Segments { get; set; }
+    public List<ParagraphSegment> Segments { get; set; }
 }
 
 public partial class ParagraphSegment: ObservableObject
@@ -96,4 +96,12 @@ public partial class ParagraphSegment: ObservableObject
 
     [ObservableProperty]
     string text;
+
+    [ObservableProperty]
+    TimeSpan timeStart;
+
+
+    [ObservableProperty]
+    TimeSpan timeEnd;
+
 }

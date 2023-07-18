@@ -58,6 +58,7 @@
 		<PackageReference Include="Plugin.Maui.Audio" Version="1.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+		<PackageReference Include="Google.Cloud.Translation.V2" Version="3.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
