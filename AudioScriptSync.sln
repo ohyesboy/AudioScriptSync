@@ -5,12 +5,16 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioScriptSync", "AudioScriptSync\AudioScriptSync.csproj", "{B3847D93-80E1-48B6-99CF-62FD1A5E16DE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{42693E67-2C2D-4432-BCC0-98B4BED0A651}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{42693E67-2C2D-4432-BCC0-98B4BED0A651}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42693E67-2C2D-4432-BCC0-98B4BED0A651}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3847D93-80E1-48B6-99CF-62FD1A5E16DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B3847D93-80E1-48B6-99CF-62FD1A5E16DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3847D93-80E1-48B6-99CF-62FD1A5E16DE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
